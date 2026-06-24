@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Strength Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <i class="ti ti-shield-lock" aria-hidden="true"></i>
+      <h1>Password Strength Analyzer</h1>
+      <p class="subtitle">Check, evaluate, and generate secure passwords</p>
+    </header>
+
+    <main>
+      <!-- Input -->
+      <section class="input-section" aria-label="Password input">
+        <div class="input-row">
+          <input
+            type="password"
+            id="pwInput"
+            placeholder="Enter a password to analyze…"
+            autocomplete="off"
+            aria-label="Password field"
+          />
+          <button class="icon-btn" id="eyeBtn" onclick="toggleEye()" aria-label="Toggle password visibility">
+            <i class="ti ti-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+
+        <div class="reuse-warning" id="reuseWarn" role="alert" aria-live="assertive">
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+          This password was used before — pick a new one.
+        </div>
+
+        <!-- Strength meter -->
+        <div class="meter-bar" role="progressbar" aria-label="Password strength" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div class="meter-fill" id="meterFill"></div>
+        </div>
+        <div class="meter-labels">
+          <span id="scoreLabel" class="score-label">—</span>
+          <span id="entropyLabel" class="entropy-label"></span>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="stats-row" id="statRow" aria-label="Password statistics"></section>
+
+      <!-- Checks -->
+      <section class="checks-grid" id="checksGrid" aria-label="Password requirements"></section>
+
+      <hr class="divider" />
+
+      <!-- Tabs -->
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab" aria-selected="true"  onclick="switchTab('suggest')">Suggestions</button>
+        <button class="tab"        role="tab" aria-selected="false" onclick="switchTab('generate')">Generator</button>
+        <button class="tab"        role="tab" aria-selected="false" onclick="switchTab('history')">History</button>
+      </div>
+
+      <!-- Suggestions panel -->
+      <div class="tab-panel active" id="tab-suggest" role="tabpanel">
+        <div id="suggestArea"></div>
+      </div>
+
+      <!-- Generator panel -->
+      <div class="tab-panel" id="tab-generate" role="tabpanel">
+        <div class="gen-options">
+          <label>
+            Length: <strong id="lenVal">16</strong>
+            <input type="range" min="8" max="32" value="16" step="1" id="genLen"
+              oninput="document.getElementById('lenVal').textContent=this.value"
+              aria-label="Password length" />
+          </label>
+          <label><input type="checkbox" id="genUpper" checked /> Uppercase</label>
+          <label><input type="checkbox" id="genDigit" checked /> Digits</label>
+          <label><input type="checkbox" id="genSymbol" checked /> Symbols</label>
+          <label><input type="checkbox" id="genWord" /> Passphrase mode</label>
+        </div>
+        <button class="btn-primary" onclick="generatePassword()">
+          <i class="ti ti-refresh" aria-hidden="true"></i> Generate passwords
+        </button>
+        <div id="genResults"></div>
+      </div>
+
+      <!-- History panel -->
+      <div class="tab-panel" id="tab-history" role="tabpanel">
+        <p class="muted-text">Passwords analyzed this session (masked). Used for reuse detection.</p>
+        <ul class="history-list" id="historyList">
+          <li class="empty-msg">No passwords yet.</li>
+        </ul>
+        <button class="btn-secondary" onclick="clearHistory()">
+          <i class="ti ti-trash" aria-hidden="true"></i> Clear history
+        </button>
+      </div>
+    </main>
+
+    <footer>
+      <p>All analysis runs locally in your browser — no data is ever sent anywhere.</p>
+    </footer>
+  </div>
+
+  <script src="analyzer.js"></script>
+</body>
+</html>
